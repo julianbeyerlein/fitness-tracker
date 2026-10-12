@@ -1,0 +1,8 @@
+   {
+     "buildCommand": "",
+     "outputDirectory": ".",
+     "cleanUrls": false,
+     "rewrites": [
+       { "source": "/", "destination": "/fitness_tracker.html" }
+     ]
+   }
