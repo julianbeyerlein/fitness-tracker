@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Training">
+    <meta name="theme-color" content="#1a1a1a">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect fill='%231a1a1a' width='180' height='180'/><text x='50%' y='50%' font-size='90' fill='white' text-anchor='middle' dy='.3em' font-weight='bold' font-family='system-ui'>TT</text></svg>">
+    <title>Julian's Fitness Tracker</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #ffffff;
+            color: #1a1a1a;
+            line-height: 1.6;
+        }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+            padding: 24px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            margin-bottom: 4px;
+        }
+        header p {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .sync-badge {
+            display: inline-block;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 6px 12px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: #fafafa;
+            border-bottom: 1px solid #e5e5e5;
+            position: sticky;
+            top: 80px;
+            z-index: 50;
+        }
+        .nav-tabs button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: transparent;
+            color: #666;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            letter-spacing: 0.3px;
+            transition: all 0.2s ease;
+        }
+        .nav-tabs button:hover {
+            color: #1a1a1a;
+            background: #f5f5f5;
+        }
+        .nav-tabs button.active {
+            border-bottom-color: #1a1a1a;
+            color: #1a1a1a;
+        }
+
+        .container {
+            padding: 32px 24px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .week-selector {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding: 0;
+        }
+        .week-selector button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: #1a1a1a;
+            padding: 8px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .week-selector button:hover {
+            opacity: 1;
+        }
+        .week-selector-text {
+            text-align: center;
+        }
+        .week-selector-text div:first-child {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        .week-selector-text div:last-child {
+            font-size: 12px;
+            color: #999;
+            letter-spacing: 0.3px;
+        }
+
+        .day-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 32px;
+        }
+        .day-btn {
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            background: #ffffff;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.2s;
+        }
+        .day-btn:hover {
+            border-color: #999;
+            color: #1a1a1a;
+        }
+        .day-btn.active {
+            border-color: #1a1a1a;
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 0;
+            margin-bottom: 24px;
+            border-radius: 0;
+        }
+
+        .workout-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1a1a;
+            padding: 20px 0;
+            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 20px;
+            letter-spacing: -0.2px;
+        }
+
+        .exercise-item {
+            padding: 16px 0;
+            border-bottom: 1px solid #f5f5f5;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s;
+        }
+        .exercise-item:hover {
+            background: #fafafa;
+            padding: 16px 12px;
+            margin: 0 -12px;
+        }
+        .exercise-item.completed {
+            opacity: 0.7;
+        }
+        .exercise-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+        .exercise-specs {
+            font-size: 11px;
+            color: #999;
+        }
+        .exercise-check {
+            font-size: 18px;
+            color: #1a1a1a;
+            opacity: 0.5;
+        }
+        .exercise-check.completed {
+            color: #2e7d32;
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #666;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 3px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #1a1a1a;
+        }
+
+        .rpe-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        .rpe-btn {
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            background: #ffffff;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        .rpe-btn:hover {
+            border-color: #999;
+        }
+        .rpe-btn.active {
+            border-color: #1a1a1a;
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 12px;
+            letter-spacing: 0.3px;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+        .btn-primary:hover {
+            background: #333333;
+        }
+        .btn-success {
+            background: #2e7d32;
+            color: #ffffff;
+        }
+        .btn-success:hover {
+            background: #1b5e20;
+        }
+        .btn-info {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        .btn-info:hover {
+            background: #bbdefb;
+        }
+        .btn-cloud {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        .btn-cloud:hover {
+            background: #ffe0b2;
+        }
+        .btn-danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .btn-danger:hover {
+            background: #ffcdd2;
+        }
+
+        .back-btn {
+            padding: 10px 16px;
+            border: 1px solid #e5e5e5;
+            background: #ffffff;
+            cursor: pointer;
+            border-radius: 3px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .info-box {
+            padding: 16px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            font-size: 13px;
+        }
+        .info-box.success {
+            background: #e8f5e9;
+            color: #1b5e20;
+        }
+        .info-box.info {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+        .info-box.cloud {
+            background: #f3e5f5;
+            color: #4a148c;
+        }
+
+        .view { display: none; }
+        .view.active { display: block; }
+
+        .kpi-item {
+            padding: 20px 0;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .kpi-item:last-child {
+            border-bottom: none;
+        }
+        .kpi-label {
+            font-weight: 500;
+            color: #666;
+            font-size: 13px;
+        }
+        .kpi-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        .rest-day-box {
+            padding: 24px;
+            background: #e8f5e9;
+            border-radius: 3px;
+            text-align: center;
+        }
+        .rest-day-box p:first-child {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1b5e20;
+            margin-bottom: 8px;
+        }
+        .rest-day-box p:last-child {
+            font-size: 13px;
+            color: #558b2f;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Training Tracker <span class="sync-badge" id="syncStatus">Local</span></h1>
+        <p id="phase">FOUNDATION I</p>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="nav-btn active" data-view="training">Training</button>
+        <button class="nav-btn" data-view="progress">KPIs</button>
+        <button class="nav-btn" data-view="settings">Settings</button>
+    </div>
+
+    <div class="container">
+        <!-- TRAINING VIEW -->
+        <div id="training" class="view active">
+            <div class="week-selector">
+                <button onclick="previousWeek()">←</button>
+                <div class="week-selector-text">
+                    <div id="weekLabel">WEEK 1</div>
+                    <div id="weekDates">Oct 12 - 18</div>
+                </div>
+                <button onclick="nextWeek()">→</button>
+            </div>
+
+            <div class="day-grid" id="dayGrid"></div>
+
+            <div class="card" id="trainingCard"></div>
+
+            <div id="restMessage" style="display: none;">
+                <div class="rest-day-box">
+                    <p>Rest Day 🌟</p>
+                    <p>Focus on recovery, sleep, and light mobility.</p>
+                </div>
+            </div>
+
+            <div id="exerciseList"></div>
+
+            <div id="actionButtons">
+                <button class="btn btn-primary" onclick="saveData()">Save</button>
+                <button class="btn btn-cloud" onclick="syncToCloud()">Sync to Cloud</button>
+            </div>
+        </div>
+
+        <!-- PROGRESS VIEW -->
+        <div id="progress" class="view">
+            <div class="info-box info">
+                <p><strong>KPI Summary</strong></p>
+                <p>Your key lifts from Saturday gym sessions. Updated automatically.</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 20px; color: #1a1a1a;">Week <span id="progressWeek">1</span> KPIs</div>
+                <div id="kpiDisplay"></div>
+                <button class="btn btn-cloud" onclick="syncKPIToCloud()">Sync KPIs</button>
+            </div>
+        </div>
+
+        <!-- SETTINGS VIEW -->
+        <div id="settings" class="view">
+            <div class="card">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 20px; color: #1a1a1a;">Cloud Sync</div>
+
+                <div class="info-box cloud">
+                    <p><strong>Google Sheets Sync</strong></p>
+                    <p>Paste your webhook URL below to enable cloud sync.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Google Apps Script URL</label>
+                    <textarea id="webhookUrl" placeholder="https://script.google.com/macros/s/XXXXX/exec" spellcheck="false"></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveWebhook()">Save Webhook</button>
+                <button class="btn btn-info" onclick="testSync()">Test Sync</button>
+            </div>
+
+            <div class="card" style="margin-top: 32px;">
+                <div style="font-size: 14px; font-weight: 600; margin-bottom: 20px; color: #1a1a1a;">About Your Plan</div>
+
+                <div style="font-size: 13px; line-height: 1.8; color: #666;">
+                    <p><strong>Bodyweight:</strong> 66 kg</p>
+                    <p><strong>Equipment:</strong> Adjustable DBs (up to 14 kg stacked)</p>
+                    <p><strong>Home workouts:</strong> DB hypertrophy + bodyweight</p>
+                    <p><strong>Saturday:</strong> Heavy barbell + weighted pull-ups</p>
+                    <p><strong>Cardio:</strong> 2x/week (Zone 2 + intensity)</p>
+                </div>
+
+                <button class="btn btn-danger" onclick="resetData()" style="margin-top: 20px;">Reset All Data</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentWeek = 1;
+        let currentDay = 0;
+        let workoutData = {};
+        let webhookUrl = '';
+        let selectedExerciseEdit = null;
+
+        const weeks = [
+            { phase: 'FOUNDATION I', days: ['Upper A (DBs + BW)', 'Cardio - Zone 2', 'Upper B (DBs + BW)', 'Cardio - Intervals', 'Rest/Mobility', 'GYM - Barbell Strength', 'Rest'] },
+            { phase: 'FOUNDATION II', days: ['Upper A (DBs + BW)', 'Cardio - Zone 2', 'Upper B (DBs + BW)', 'Cardio - Tempo', 'Rest/Mobility', 'GYM - Barbell Strength', 'Rest'] },
+            { phase: 'FOUNDATION III', days: ['Upper A (DBs + BW)', 'Cardio - Zone 2', 'Upper B (DBs + BW)', 'Cardio - Easy Run', 'Rest/Mobility', 'GYM - Barbell Strength', 'Rest'] },
+            { phase: 'HYPERTROPHY I', days: ['Upper A (Hyp)', 'Cardio - Zone 2', 'Upper B (Hyp)', 'Cardio - Intervals', 'Rest/Mobility', 'GYM - Barbell Hyp', 'Rest'] },
+            { phase: 'HYPERTROPHY II', days: ['Upper A (Hyp)', 'Cardio - Zone 2', 'Upper B (Hyp)', 'Cardio - Tempo', 'Rest/Mobility', 'GYM - Barbell Hyp', 'Rest'] },
+            { phase: 'HYPERTROPHY III', days: ['Upper A (Hyp)', 'Cardio - Zone 2', 'Upper B (Hyp)', 'Cardio - Intervals', 'Rest/Mobility', 'GYM - Barbell Hyp', 'Rest'] },
+            { phase: 'HYPERTROPHY IV', days: ['Upper A (Hyp)', 'Cardio - Zone 2', 'Upper B (Hyp)', 'Cardio - Max Effort', 'Rest/Mobility', 'GYM - Barbell Hyp', 'Rest'] },
+            { phase: 'HYPERTROPHY V', days: ['Upper A (Hyp)', 'Cardio - Zone 2', 'Upper B (Hyp)', 'Cardio - Easy', 'Rest/Mobility', 'GYM - Barbell Hyp', 'Rest'] },
+            { phase: 'STRENGTH PEAK I', days: ['Upper A (Strength)', 'Cardio - Zone 2', 'Upper B (Tech)', 'Cardio - Tempo', 'Rest/Mobility', 'GYM - Heavy', 'Rest'] },
+            { phase: 'STRENGTH PEAK II', days: ['Upper A (Strength)', 'Cardio - Zone 2', 'Upper B (Tech)', 'Cardio - Intervals', 'Rest/Mobility', 'GYM - Heavy', 'Rest'] },
+            { phase: 'STRENGTH PEAK III', days: ['Upper A (Strength)', 'Cardio - Zone 2', 'Upper B (Tech)', 'Cardio - Easy', 'Rest/Mobility', 'GYM - Heavy', 'Rest'] },
+            { phase: 'DELOAD WEEK', days: ['Upper A (Light)', 'Cardio - Zone 2', 'Upper B (Light)', 'Cardio - Easy', 'Rest/Mobility', 'GYM - Light', 'Rest'] }
+        ];
+
+        const exercises = {
+            'Upper A (DBs + BW)': [
+                { name: 'DB Bench Press', sets: 4, reps: '10-12', weight: '7kg', form: 'Lie flat. Press up and in. Control eccentric (3 sec down).' },
+                { name: 'Heavy Single-Arm DB Rows', sets: 5, reps: '8-10', weight: '7kg each side', form: 'Staggered stance. Row hard, squeeze lat. Explosive pull.' },
+                { name: 'Decline Push-ups', sets: 3, reps: '12', weight: 'BW', form: 'Feet elevated. Hands shoulder-width. Lower chest to deck.' },
+                { name: 'DB Pullovers', sets: 3, reps: '12', weight: '7kg', form: 'Lie perpendicular to bench. Pull DB over chest.' }
+            ],
+            'Upper B (DBs + BW)': [
+                { name: 'DB Incline Press', sets: 4, reps: '10-12', weight: '7kg', form: '30-45° incline. Press up. Emphasizes upper chest.' },
+                { name: 'Single-Arm DB Rows (Tempo)', sets: 4, reps: '10', weight: '7kg', form: '3 sec eccentric, 1 sec pause, explosive pull.' },
+                { name: 'DB Flyes', sets: 4, reps: '12', weight: '5kg', form: 'Lie flat, slight elbow bend. Lower in arc. Feel stretch.' },
+                { name: 'Lateral Raises', sets: 4, reps: '15', weight: '5kg', form: 'Stand, raise to shoulder height. 2-sec pause at top.' },
+                { name: 'DB Curls', sets: 4, reps: '12', weight: '7kg', form: 'Curl toward shoulders. Elbows at sides. Control descent.' },
+                { name: 'Tricep Extension', sets: 4, reps: '12', weight: '7kg', form: 'Hold DB overhead. Lower behind head. Stationary elbows.' }
+            ],
+            'GYM - Barbell Strength': [
+                { name: 'Barbell Bench Press', sets: 5, reps: '5', weight: '+2.5 kg', form: 'Lie flat. Grip wider than shoulder-width. Explode up.', isKPI: true },
+                { name: 'Barbell Rows', sets: 5, reps: '5', weight: '+5 kg', form: 'Slight knee bend. Row to chest. Squeeze shoulder blades.', isKPI: true },
+                { name: 'Overhead Press', sets: 4, reps: '5-6', weight: '+1.2 kg', form: 'Standing. Press overhead to lockout.' },
+                { name: 'Weighted Pull-ups', sets: 4, reps: '5-6', weight: '+1-2.5 kg', form: 'Chin over bar. Full range. Controlled descent.', isKPI: true },
+                { name: 'Weighted Dips', sets: 4, reps: '6-8', weight: '+1-2.5 kg', form: 'Lower until elbows ~90°. Press back up. Lean forward.', isKPI: true }
+            ],
+            'GYM - Barbell Hyp': [
+                { name: 'Barbell Bench Press', sets: 4, reps: '6-8', weight: '+2.5 kg', form: 'Lie flat. Controlled tempo. Full range.', isKPI: true },
+                { name: 'Barbell Rows', sets: 4, reps: '6-8', weight: '+5 kg', form: 'Row to chest. Squeeze hard. Drive through legs and lats.', isKPI: true },
+                { name: 'Overhead Press', sets: 4, reps: '6-8', weight: 'Steady', form: 'Press overhead. Full lockout. Control descent.' },
+                { name: 'Weighted Dips', sets: 4, reps: '8-10', weight: 'Steady', form: 'Elbows ~90°. Press up. Lean forward for chest.', isKPI: true },
+                { name: 'Barbell Curls', sets: 3, reps: '8-10', weight: 'Steady', form: 'Stand. Curl toward shoulders. Elbows at sides.' }
+            ],
+            'GYM - Heavy': [
+                { name: 'Barbell Bench Press', sets: 5, reps: '3-4', weight: '+2.5 kg', form: 'Heavy weight, explosive. Full power.', isKPI: true },
+                { name: 'Barbell Rows', sets: 5, reps: '3-4', weight: '+5 kg', form: 'Max effort. Drive through legs hard.', isKPI: true },
+                { name: 'Overhead Press', sets: 4, reps: '4-5', weight: '+1.2 kg', form: 'Controlled, explosive lockout.' },
+                { name: 'Weighted Pull-ups', sets: 4, reps: '4-5', weight: '+2-3 kg', form: 'Strong and controlled.', isKPI: true },
+                { name: 'Weighted Dips', sets: 4, reps: '5-6', weight: '+2-3 kg', form: 'Full depth, explosive press.', isKPI: true }
+            ],
+            'GYM - Light': [
+                { name: 'Barbell Bench Press', sets: 3, reps: '5', weight: '60% intensity', form: 'Light, technical work. Focus on form.', isKPI: true },
+                { name: 'Barbell Rows', sets: 3, reps: '5', weight: '60% intensity', form: 'Controlled, smooth tempo.', isKPI: true },
+                { name: 'Overhead Press', sets: 3, reps: '5-6', weight: '60% intensity', form: 'Light, recovery-focused.' },
+                { name: 'Weighted Pull-ups', sets: 3, reps: '4-5', weight: 'Bodyweight or light', form: 'Easy, no failure.', isKPI: true },
+                { name: 'Weighted Dips', sets: 3, reps: '6', weight: 'Bodyweight or light', form: 'Light, smooth movement.', isKPI: true }
+            ],
+            'Cardio - Zone 2': [
+                { name: 'Wahoo Kickr (30-40 min)', sets: 1, reps: 'Steady', weight: 'Zone 2 HR', form: 'Easy pedal. Conversational pace. HR 120-135 bpm.' },
+                { name: 'Easy Run (5-6 km)', sets: 1, reps: 'Steady', weight: 'Easy', form: 'Sustainable pace. No watch-watching. Just move.' }
+            ],
+            'Cardio - Intervals': [
+                { name: 'Bike Intervals (8-12x)', sets: 1, reps: '1.5-2 min hard + equal recovery', weight: 'Threshold', form: 'Wahoo Kickr structured. Push hard, recover easy.' }
+            ],
+            'Cardio - Tempo': [
+                { name: 'Tempo Run (6-7 km)', sets: 1, reps: '3-4 min hard', weight: 'Moderate', form: 'Easy bookends. Hard effort in middle.' }
+            ],
+            'Cardio - Easy Run': [
+                { name: 'Easy Run (5 km)', sets: 1, reps: 'Steady', weight: 'Easy', form: 'Sustainable pace. Light effort.' }
+            ],
+            'Cardio - Max Effort': [
+                { name: 'Max Effort Intervals', sets: 1, reps: '12x 1 min max', weight: 'All out', form: 'Push to limits. Full recovery between.' }
+            ],
+            'Rest/Mobility': [
+                { name: 'Mobility Flow', sets: 1, reps: '10 min', weight: 'BW', form: 'Cat-cow, thoracic rotations, shoulder dislocates, pigeon pose.' },
+                { name: 'Foam Roll', sets: 1, reps: '10 min', weight: 'BW', form: 'Chest, lats, shoulders. 60-90 sec per side.' }
+            ]
+        };
+
+        function loadData() {
+            const saved = localStorage.getItem('fitnessData');
+            if (saved) workoutData = JSON.parse(saved);
+            webhookUrl = localStorage.getItem('webhookUrl') || '';
+            document.getElementById('webhookUrl').value = webhookUrl;
+            updateSyncStatus();
+        }
+
+        function saveData() {
+            localStorage.setItem('fitnessData', JSON.stringify(workoutData));
+            alert('✓ Saved');
+        }
+
+        function saveWebhook() {
+            webhookUrl = document.getElementById('webhookUrl').value.trim();
+            if (!webhookUrl) {
+                alert('Please paste your webhook URL');
+                return;
+            }
+            localStorage.setItem('webhookUrl', webhookUrl);
+            alert('✓ Webhook saved');
+            updateSyncStatus();
+        }
+
+        function updateSyncStatus() {
+            const badge = document.getElementById('syncStatus');
+            if (webhookUrl) {
+                badge.textContent = 'Cloud Sync ✓';
+                badge.style.background = '#e8f5e9';
+                badge.style.color = '#2e7d32';
+            } else {
+                badge.textContent = 'Local';
+                badge.style.background = '#f5f5f5';
+                badge.style.color = '#999';
+            }
+        }
+
+        function testSync() {
+            if (!webhookUrl) {
+                alert('Please save your webhook URL first');
+                return;
+            }
+            const testData = { type: 'kpi', week: 'TEST', bench: '100 kg', rows: '120 kg', dips: '50 kg', pullups: '+10 kg' };
+            sendToCloud(testData);
+            alert('✓ Test sent');
+        }
+
+        function syncToCloud() {
+            if (!webhookUrl) {
+                alert('Please save your webhook URL in Settings first');
+                return;
+            }
+            const logKey = `w${currentWeek}d${currentDay}`;
+            const dayExercises = exercises[weeks[currentWeek - 1].days[currentDay]] || [];
+            let syncCount = 0;
+
+            dayExercises.forEach(ex => {
+                const log = workoutData[`${logKey}_${ex.name}`] || {};
+                if (log.completed || log.setsCompleted) {
+                    const data = { type: 'exercise', week: currentWeek, day: currentDay + 1, exercise: ex.name, sets: log.setsCompleted, weight: log.weight, reps: log.reps, rpe: log.rpe, completed: log.completed };
+                    sendToCloud(data);
+                    syncCount++;
+                }
+            });
+
+            if (syncCount > 0) {
+                alert(`✓ Synced ${syncCount} exercise(s)`);
+            } else {
+                alert('No exercises logged');
+            }
+        }
+
+        function getKPIsForWeek(week) {
+            const saturdayIndex = 5;
+            const logKey = `w${week}d${saturdayIndex}`;
+            const saturdayWorkout = weeks[week - 1].days[saturdayIndex];
+            const dayExercises = exercises[saturdayWorkout] || [];
+            const kpis = {};
+            dayExercises.forEach(ex => {
+                const log = workoutData[`${logKey}_${ex.name}`] || {};
+                if (ex.isKPI && log.weight) {
+                    if (ex.name === 'Barbell Bench Press') kpis.bench = log.weight;
+                    if (ex.name === 'Barbell Rows') kpis.rows = log.weight;
+                    if (ex.name === 'Weighted Dips') kpis.dips = log.weight;
+                    if (ex.name === 'Weighted Pull-ups') kpis.pullups = log.weight;
+                }
+            });
+            return kpis;
+        }
+
+        function syncKPIToCloud() {
+            if (!webhookUrl) {
+                alert('Please save your webhook URL in Settings first');
+                return;
+            }
+            const kpis = getKPIsForWeek(currentWeek);
+            if (!kpis.bench && !kpis.rows && !kpis.dips && !kpis.pullups) {
+                alert('No KPIs found. Log your Saturday gym session first.');
+                return;
+            }
+            const data = { type: 'kpi', week: currentWeek, bench: kpis.bench || '', rows: kpis.rows || '', dips: kpis.dips || '', pullups: kpis.pullups || '' };
+            sendToCloud(data);
+            alert('✓ KPIs synced');
+        }
+
+        function sendToCloud(data) {
+            fetch(webhookUrl, { method: 'POST', body: JSON.stringify(data), mode: 'no-cors' }).catch(err => console.log('sent'));
+        }
+
+        function resetData() {
+            if (confirm('Reset all LOCAL data?')) {
+                workoutData = {};
+                localStorage.removeItem('fitnessData');
+                alert('Data cleared');
+                location.reload();
+            }
+        }
+
+        function switchView(view) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById(view).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach((btn, idx) => {
+                btn.classList.toggle('active', ['training', 'progress', 'settings'][idx] === view);
+            });
+            if (view === 'progress') renderKPISummary();
+        }
+
+        function previousWeek() {
+            if (currentWeek > 1) { currentWeek--; updateDisplay(); }
+        }
+
+        function nextWeek() {
+            if (currentWeek < 12) { currentWeek++; updateDisplay(); }
+        }
+
+        function updateDisplay() {
+            const week = weeks[currentWeek - 1];
+            document.getElementById('phase').textContent = week.phase;
+            document.getElementById('weekLabel').textContent = `WEEK ${currentWeek}`;
+
+            const startDate = new Date(2026, 9, 12 + (currentWeek - 1) * 7);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 6);
+
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const startMonth = months[startDate.getMonth()];
+            const endMonth = months[endDate.getMonth()];
+
+            if (startMonth === endMonth) {
+                document.getElementById('weekDates').textContent = `${startMonth} ${startDate.getDate()} - ${endDate.getDate()}`;
+            } else {
+                document.getElementById('weekDates').textContent = `${startMonth} ${startDate.getDate()} - ${endMonth} ${endDate.getDate()}`;
+            }
+
+            const dayGrid = document.getElementById('dayGrid');
+            dayGrid.innerHTML = '';
+            const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+            days.forEach((day, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `day-btn ${currentDay === idx ? 'active' : ''}`;
+                btn.textContent = day;
+                btn.onclick = () => { currentDay = idx; updateDisplay(); };
+                dayGrid.appendChild(btn);
+            });
+
+            renderTrainingCard();
+        }
+
+        function renderTrainingCard() {
+            const week = weeks[currentWeek - 1];
+            const todayWorkout = week.days[currentDay];
+            const card = document.getElementById('trainingCard');
+
+            card.innerHTML = `<div class="workout-name">${todayWorkout}</div>`;
+
+            const restMsg = document.getElementById('restMessage');
+            restMsg.style.display = (todayWorkout === 'Rest' || todayWorkout === 'Rest/Mobility') ? 'block' : 'none';
+
+            const actionButtons = document.getElementById('actionButtons');
+            actionButtons.style.display = (todayWorkout === 'Rest' || todayWorkout === 'Rest/Mobility') ? 'none' : 'block';
+
+            renderExerciseList(todayWorkout);
+        }
+
+        function renderExerciseList(workout) {
+            const exList = document.getElementById('exerciseList');
+            exList.innerHTML = '';
+
+            if (!workout || workout === 'Rest' || workout === 'Rest/Mobility') return;
+
+            const exs = exercises[workout] || [];
+
+            exs.forEach(ex => {
+                const log = workoutData[`w${currentWeek}d${currentDay}_${ex.name}`] || {};
+                const div = document.createElement('div');
+                div.className = `exercise-item ${log.completed ? 'completed' : ''}`;
+                div.innerHTML = `
+                    <div>
+                        <div class="exercise-name">${ex.name}</div>
+                        <div class="exercise-specs">${ex.sets}×${ex.reps} @ ${ex.weight}</div>
+                    </div>
+                    <div class="exercise-check ${log.completed ? 'completed' : ''}">
+                        ${log.completed ? '✓' : '○'}
+                    </div>
+                `;
+                div.onclick = () => editExercise(ex);
+                exList.appendChild(div);
+            });
+        }
+
+        function editExercise(ex) {
+            selectedExerciseEdit = ex;
+            const log = workoutData[`w${currentWeek}d${currentDay}_${ex.name}`] || {};
+            const container = document.getElementById('exerciseList');
+            container.innerHTML = `
+                <button class="back-btn" onclick="backToList()">← Back to exercises</button>
+                <div class="card">
+                    <div class="workout-name">${ex.name}</div>
+                    <div style="font-size: 12px; color: #999; margin-bottom: 16px;">${ex.sets}×${ex.reps} @ ${ex.weight}</div>
+                    <div style="background: #fafafa; padding: 16px; border-radius: 3px; font-size: 12px; margin-bottom: 16px;">
+                        <strong>Form:</strong> ${ex.form}
+                    </div>
+                </div>
+                <div class="card">
+                    <div style="font-size: 13px; font-weight: 600; margin-bottom: 16px; color: #1a1a1a;">Log this exercise</div>
+
+                    <div class="form-group">
+                        <label>Sets Completed</label>
+                        <input type="number" id="setsInput" value="${log.setsCompleted || ''}" placeholder="${ex.sets}" min="0">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Weight (kg)</label>
+                        <input type="text" id="weightInput" value="${log.weight || ''}" placeholder="${ex.weight}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reps</label>
+                        <input type="text" id="repsInput" value="${log.reps || ''}" placeholder="${ex.reps}">
+                    </div>
+
+                    <div class="form-group">
+                        <label>RPE (1-10)</label>
+                        <div class="rpe-buttons">
+                            ${Array.from({length: 10}, (_, i) => `<button class="rpe-btn ${log.rpe === i+1 ? 'active' : ''}" onclick="updateRPE(${i+1})">${i+1}</button>`).join('')}
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" onclick="completeExercise()">
+                        ${log.completed ? '✓ Done' : 'Mark as Done'}
+                    </button>
+                </div>
+                <button class="btn btn-primary" onclick="saveExercise()">Save & Back</button>
+            `;
+        }
+
+        function backToList() {
+            updateDisplay();
+        }
+
+        let tempRPE = null;
+        function updateRPE(val) { tempRPE = val; }
+
+        function completeExercise() {
+            const key = `w${currentWeek}d${currentDay}_${selectedExerciseEdit.name}`;
+            workoutData[key] = workoutData[key] || {};
+            workoutData[key].completed = !workoutData[key].completed;
+            saveData();
+            editExercise(selectedExerciseEdit);
+        }
+
+        function saveExercise() {
+            const key = `w${currentWeek}d${currentDay}_${selectedExerciseEdit.name}`;
+            workoutData[key] = {
+                setsCompleted: document.getElementById('setsInput').value,
+                weight: document.getElementById('weightInput').value,
+                reps: document.getElementById('repsInput').value,
+                rpe: tempRPE,
+                completed: workoutData[key]?.completed || false
+            };
+            tempRPE = null;
+            saveData();
+            updateDisplay();
+        }
+
+        function renderKPISummary() {
+            document.getElementById('progressWeek').textContent = currentWeek;
+            const kpis = getKPIsForWeek(currentWeek);
+            const kpiDisplay = document.getElementById('kpiDisplay');
+
+            kpiDisplay.innerHTML = `
+                <div class="kpi-item">
+                    <div class="kpi-label">Bench Press</div>
+                    <div class="kpi-value">${kpis.bench || '—'}</div>
+                </div>
+                <div class="kpi-item">
+                    <div class="kpi-label">Barbell Rows</div>
+                    <div class="kpi-value">${kpis.rows || '—'}</div>
+                </div>
+                <div class="kpi-item">
+                    <div class="kpi-label">Weighted Dips</div>
+                    <div class="kpi-value">${kpis.dips || '—'}</div>
+                </div>
+                <div class="kpi-item">
+                    <div class="kpi-label">Weighted Pull-ups</div>
+                    <div class="kpi-value">${kpis.pullups || '—'}</div>
+                </div>
+            `;
+        }
+
+        document.querySelectorAll('.nav-btn').forEach((btn, idx) => {
+            btn.onclick = () => switchView(['training', 'progress', 'settings'][idx]);
+        });
+
+        loadData();
+        updateDisplay();
+
+        // Register service worker for offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW registration failed:', err));
+        }
+    </script>
+</body>
+</html>
