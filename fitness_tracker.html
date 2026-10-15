@@ -486,18 +486,18 @@
         let flexibleWorkoutChoice = {};
 
         const weeks = [
-            { phase: 'FOUNDATION I', days: ['Upper A (DBs + BW)', 'Flexible', 'Rest/Mobility', 'Upper B (DBs + BW)', 'Flexible', 'GYM - Barbell Strength', 'Cardio - Bike'] },
-            { phase: 'FOUNDATION II', days: ['Upper A (DBs + BW)', 'Flexible', 'Rest/Mobility', 'Upper B (DBs + BW)', 'Flexible', 'GYM - Barbell Strength', 'Cardio - Bike'] },
-            { phase: 'FOUNDATION III', days: ['Upper A (DBs + BW)', 'Flexible', 'Rest/Mobility', 'Upper B (DBs + BW)', 'Flexible', 'GYM - Barbell Strength', 'Cardio - Bike'] },
-            { phase: 'HYPERTROPHY I', days: ['Upper A (Hyp)', 'Flexible', 'Rest/Mobility', 'Upper B (Hyp)', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
-            { phase: 'HYPERTROPHY II', days: ['Upper A (Hyp)', 'Flexible', 'Rest/Mobility', 'Upper B (Hyp)', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
-            { phase: 'HYPERTROPHY III', days: ['Upper A (Hyp)', 'Flexible', 'Rest/Mobility', 'Upper B (Hyp)', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
-            { phase: 'HYPERTROPHY IV', days: ['Upper A (Hyp)', 'Flexible', 'Rest/Mobility', 'Upper B (Hyp)', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
-            { phase: 'HYPERTROPHY V', days: ['Upper A (Hyp)', 'Flexible', 'Rest/Mobility', 'Upper B (Hyp)', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
-            { phase: 'STRENGTH PEAK I', days: ['Upper A (Strength)', 'Flexible', 'Rest/Mobility', 'Upper B (Tech)', 'Flexible', 'GYM - Heavy', 'Cardio - Bike'] },
-            { phase: 'STRENGTH PEAK II', days: ['Upper A (Strength)', 'Flexible', 'Rest/Mobility', 'Upper B (Tech)', 'Flexible', 'GYM - Heavy', 'Cardio - Bike'] },
-            { phase: 'STRENGTH PEAK III', days: ['Upper A (Strength)', 'Flexible', 'Rest/Mobility', 'Upper B (Tech)', 'Flexible', 'GYM - Heavy', 'Cardio - Bike'] },
-            { phase: 'DELOAD WEEK', days: ['Upper A (Light)', 'Flexible', 'Rest/Mobility', 'Upper B (Light)', 'Flexible', 'GYM - Light', 'Cardio - Bike'] }
+            { phase: 'FOUNDATION I', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Barbell Strength', 'Cardio - Bike'] },
+            { phase: 'FOUNDATION II', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Barbell Strength', 'Cardio - Bike'] },
+            { phase: 'FOUNDATION III', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Barbell Strength', 'Cardio - Bike'] },
+            { phase: 'HYPERTROPHY I', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
+            { phase: 'HYPERTROPHY II', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
+            { phase: 'HYPERTROPHY III', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
+            { phase: 'HYPERTROPHY IV', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
+            { phase: 'HYPERTROPHY V', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Barbell Hyp', 'Cardio - Bike'] },
+            { phase: 'STRENGTH PEAK I', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Heavy', 'Cardio - Bike'] },
+            { phase: 'STRENGTH PEAK II', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Heavy', 'Cardio - Bike'] },
+            { phase: 'STRENGTH PEAK III', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Heavy', 'Cardio - Bike'] },
+            { phase: 'DELOAD WEEK', days: ['Flexible', 'Flexible', 'Rest/Mobility', 'Flexible', 'Flexible', 'GYM - Light', 'Cardio - Bike'] }
         ];
 
         const exercises = {
@@ -581,6 +581,10 @@
                 { name: 'Heavy Single-Arm DB Rows', sets: 5, reps: '8-10', weight: '7kg each side', form: 'Staggered stance. Row hard, squeeze lat. Explosive pull.' },
                 { name: 'Decline Push-ups', sets: 3, reps: '12', weight: 'BW', form: 'Feet elevated. Hands shoulder-width. Lower chest to deck.' },
                 { name: 'DB Pullovers', sets: 3, reps: '12', weight: '7kg', form: 'Lie perpendicular to bench. Pull DB over chest.' }
+            ],
+            'Rest/Mobility': [
+                { name: 'Mobility Flow', sets: 1, reps: '10 min', weight: 'BW', form: 'Cat-cow, thoracic rotations, shoulder dislocates, pigeon pose.' },
+                { name: 'Foam Roll', sets: 1, reps: '10 min', weight: 'BW', form: 'Chest, lats, shoulders. 60-90 sec per side.' }
             ]
         };
 
@@ -790,7 +794,8 @@
                         <div class="workout-options">
                             <button class="btn btn-primary" onclick="selectFlexibleWorkout('Cardio - Intervals')">Cardio<br>Intervals</button>
                             <button class="btn btn-primary" onclick="selectFlexibleWorkout('Cardio - Zone 2')">Cardio<br>Easy</button>
-                            <button class="btn btn-success" onclick="selectFlexibleWorkout('Upper Home A')" style="grid-column: span 2; margin-top: 0;">Upper Home Workout</button>
+                            <button class="btn btn-success" onclick="selectFlexibleWorkout('Upper Home A')">Upper Home<br>Workout</button>
+                            <button class="btn btn-info" onclick="selectFlexibleWorkout('Rest/Mobility')">Rest &<br>Mobility</button>
                         </div>
                     `;
                     document.getElementById('exerciseList').innerHTML = '';
